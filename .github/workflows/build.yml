@@ -1,16 +1,40 @@
-language: cpp
+name: CMake Build
 
-os: linux  # Сборка на Linux
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
-compiler:
-  - gcc
-  - clang
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y cmake
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
 
-script:
-  - mkdir build && cd build
-  - cmake ..
-  - cmake --build .
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ clang
+
+      - name: Configure with CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+
+      - name: Build
+        run: |
+          cd build
+          cmake --build .
+
+      - name: Install
+        run: |
+          cd build
+          cmake --install . --prefix ../install
