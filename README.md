@@ -173,6 +173,8 @@ $ git add .travis.yml
 $ git commit -m "Добавлен файл .travis.yml"
 $ git push origin master
 ```
+Результаты сборки:
+
 * используйте [AppVeyor](https://www.appveyor.com/) для сборки на операционной системе **Windows**.
 
 ## Links
