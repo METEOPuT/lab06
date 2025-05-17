@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/METEOPuT/lab04.svg?branch=master)](https://travis-ci.com/METEOPuT/lab04)
+
 ## Laboratory work IV
 
 Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
@@ -173,7 +175,39 @@ $ git add .travis.yml
 $ git commit -m "Добавлен файл .travis.yml"
 $ git push origin master
 ```
-Результаты сборки:
+Аналогичные действия для GitHub Actions:
+```
+$ mkdir .github
+$ mkdir .github/workflows
+$ .github/workflows
+$ nano build.yml
+```
+Содержимое build.yml:
+```
+language: cpp
+
+os: linux  # Сборка на Linux
+
+compiler:
+  - gcc
+  - clang
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y cmake
+
+script:
+  - mkdir build && cd build
+  - cmake ..
+  - cmake --build .
+
+```
+Также коммитим и отправляем в репозиторий GitHub:
+```
+$ git add build.yml
+$ git commit -m "Аналогичная сборка GitHub Actions"
+$ git push origin master
+```
 
 * используйте [AppVeyor](https://www.appveyor.com/) для сборки на операционной системе **Windows**.
 
