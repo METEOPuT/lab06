@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/METEOPuT/lab04.svg?branch=master)](https://travis-ci.com/METEOPuT/lab04)
-
 ## Laboratory work IV
 
 Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
