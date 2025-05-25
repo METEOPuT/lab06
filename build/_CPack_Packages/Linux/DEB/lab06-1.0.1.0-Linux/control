@@ -1,0 +1,10 @@
+Architecture: all
+Description: lab06
+ MB it works correctly
+Maintainer: METEOPuT
+Package: lab06
+Priority: optional
+Section: devel
+Version: 1.0.1.0-1
+Installed-Size: 34
+
