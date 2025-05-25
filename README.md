@@ -1,29 +1,25 @@
-[![Build Status](https://travis-ci.com/METEOPuT/lab04.svg?branch=master)](https://travis-ci.com/METEOPuT/lab04)
+## Laboratory work VI
 
-## Laboratory work IV
-
-Данная лабораторная работа посвещена изучению систем непрерывной интеграции на примере сервиса **Travis CI**
+Данная лабораторная работа посвещена изучению средств пакетирования на примере **CPack**
 
 ```sh
-$ open https://travis-ci.org
+$ open https://cmake.org/Wiki/CMake:CPackPackageGenerators
 ```
 
 ## Tasks
 
-- [ ] 1. Авторизоваться на сервисе **Travis CI** с использованием **GitHub** аккаунта
-- [ ] 2. Создать публичный репозиторий с названием **lab04** на сервисе **GitHub**
+- [ ] 1. Создать публичный репозиторий с названием **lab06** на сервисе **GitHub**
+- [ ] 2. Выполнить инструкцию учебного материала
 - [ ] 3. Ознакомиться со ссылками учебного материала
-- [ ] 4. Включить интеграцию сервиса **Travis CI** с созданным репозиторием
-- [ ] 5. Получить токен для **Travis CLI** с правами **repo** и **user**
-- [ ] 6. Получить фрагмент вставки значка сервиса **Travis CI** в формате **Markdown**
-- [ ] 7. Выполнить инструкцию учебного материала
-- [ ] 8. Составить отчет и отправить ссылку личным сообщением в **Slack**
+- [ ] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
 ## Tutorial
 
 ```sh
 $ export GITHUB_USERNAME=<имя_пользователя>
-$ export GITHUB_TOKEN=<полученный_токен>
+$ export GITHUB_EMAIL=<адрес_почтового_ящика>
+$ alias edit=<nano|vi|vim|subl>
+$ alias gsed=sed # for *-nix system
 ```
 
 ```sh
@@ -33,87 +29,146 @@ $ source scripts/activate
 ```
 
 ```sh
-$ \curl -sSL https://get.rvm.io | bash -s -- --ignore-dotfiles
-$ echo "source $HOME/.rvm/scripts/rvm" >> scripts/activate
-$ . scripts/activate
-$ rvm autolibs disable
-$ rvm install ruby-2.4.2
-$ rvm use 2.4.2 --default
-$ gem install travis
-```
-
-```sh
-$ git clone https://github.com/${GITHUB_USERNAME}/lab03 projects/lab04
-$ cd projects/lab04
+$ git clone https://github.com/${GITHUB_USERNAME}/lab05 projects/lab06
+$ cd projects/lab06
 $ git remote remove origin
-$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab04
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab06
 ```
 
 ```sh
-$ cat > .travis.yml <<EOF
-language: cpp
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION_STRING "v\${PRINT_VERSION}")
+' CMakeLists.txt
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION\
+  \${PRINT_VERSION_MAJOR}.\${PRINT_VERSION_MINOR}.\${PRINT_VERSION_PATCH}.\${PRINT_VERSION_TWEAK})
+' CMakeLists.txt
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION_TWEAK 0)
+' CMakeLists.txt
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION_PATCH 0)
+' CMakeLists.txt
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION_MINOR 1)
+' CMakeLists.txt
+$ gsed -i '/project(print)/a\
+set(PRINT_VERSION_MAJOR 0)
+' CMakeLists.txt
+$ git diff
+```
+
+```sh
+$ touch DESCRIPTION && edit DESCRIPTION
+$ touch ChangeLog.md
+$ export DATE="`LANG=en_US date +'%a %b %d %Y'`"
+$ cat > ChangeLog.md <<EOF
+* ${DATE} ${GITHUB_USERNAME} <${GITHUB_EMAIL}> 0.1.0.0
+- Initial RPM release
 EOF
 ```
 
 ```sh
-$ cat >> .travis.yml <<EOF
-
-script:
-- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
-- cmake --build _build
-- cmake --build _build --target install
+$ cat > CPackConfig.cmake <<EOF
+include(InstallRequiredSystemLibraries)
 EOF
 ```
 
 ```sh
-$ cat >> .travis.yml <<EOF
-
-addons:
-  apt:
-    sources:
-      - george-edison55-precise-backports
-    packages:
-      - cmake
-      - cmake-data
+$ cat >> CPackConfig.cmake <<EOF
+set(CPACK_PACKAGE_CONTACT ${GITHUB_EMAIL})
+set(CPACK_PACKAGE_VERSION_MAJOR \${PRINT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR \${PRINT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH \${PRINT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK \${PRINT_VERSION_TWEAK})
+set(CPACK_PACKAGE_VERSION \${PRINT_VERSION})
+set(CPACK_PACKAGE_DESCRIPTION_FILE \${CMAKE_CURRENT_SOURCE_DIR}/DESCRIPTION)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "static C++ library for printing")
 EOF
 ```
 
 ```sh
-$ travis login --github-token ${GITHUB_TOKEN}
+$ cat >> CPackConfig.cmake <<EOF
+
+set(CPACK_RESOURCE_FILE_LICENSE \${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README \${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+EOF
 ```
 
 ```sh
-$ travis lint
+$ cat >> CPackConfig.cmake <<EOF
+
+set(CPACK_RPM_PACKAGE_NAME "print-devel")
+set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+set(CPACK_RPM_PACKAGE_GROUP "print")
+set(CPACK_RPM_CHANGELOG_FILE \${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog.md)
+set(CPACK_RPM_PACKAGE_RELEASE 1)
+EOF
 ```
 
 ```sh
-$ ex -sc '1i|<фрагмент_вставки_значка>' -cx README.md
+$ cat >> CPackConfig.cmake <<EOF
+
+set(CPACK_DEBIAN_PACKAGE_NAME "libprint-dev")
+set(CPACK_DEBIAN_PACKAGE_PREDEPENDS "cmake >= 3.0")
+set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
+EOF
 ```
 
 ```sh
-$ git add .travis.yml
-$ git add README.md
-$ git commit -m"added CI"
-$ git push origin master
+$ cat >> CPackConfig.cmake <<EOF
+
+include(CPack)
+EOF
 ```
 
 ```sh
-$ travis lint
-$ travis accounts
-$ travis sync
-$ travis repos
+$ cat >> CMakeLists.txt <<EOF
+
+include(CPackConfig.cmake)
+EOF
+```
+
+```sh
+$ gsed -i 's/lab05/lab06/g' README.md
+```
+
+```sh
+$ git add .
+$ git commit -m"added cpack config"
+$ git tag v0.1.0.0
+$ git push origin master --tags
+```
+
+```sh
+$ travis login --auto
 $ travis enable
-$ travis whatsup
-$ travis branches
-$ travis history
-$ travis show
+```
+
+```sh
+$ cmake -H. -B_build
+$ cmake --build _build
+$ cd _build
+$ cpack -G "TGZ"
+$ cd ..
+```
+
+```sh
+$ cmake -H. -B_build -DCPACK_GENERATOR="TGZ"
+$ cmake --build _build --target package
+```
+
+```sh
+$ mkdir artifacts
+$ mv _build/*.tar.gz artifacts
+$ tree artifacts
 ```
 
 ## Report
 
 ```sh
 $ popd
-$ export LAB_NUMBER=04
+$ export LAB_NUMBER=06
 $ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
 $ mkdir reports/lab${LAB_NUMBER}
 $ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
@@ -124,98 +179,147 @@ $ gist REPORT.md
 
 ## Homework
 
-Вы продолжаете проходить стажировку в "Formatter Inc." (см [подробности](https://github.com/tp-labs/lab03#Homework)).
+После того, как вы настроили взаимодействие с системой непрерывной интеграции,</br>
+обеспечив автоматическую сборку и тестирование ваших изменений, стоит задуматься</br>
+о создание пакетов для измениний, которые помечаются тэгами (см. вкладку [releases](https://github.com/tp-labs/lab06/releases)).</br>
+Пакет должен содержать приложение _solver_ из [предыдущего задания](https://github.com/tp-labs/lab03#задание-1)
+Таким образом, каждый новый релиз будет состоять из следующих компонентов:
+- архивы с файлами исходного кода (`.tar.gz`, `.zip`)
+- пакеты с бинарным файлом _solver_ (`.deb`, `.rpm`, `.msi`, `.dmg`)
 
-В прошлый раз ваше задание заключалось в настройке автоматизированной системы **CMake**.
+Клонируем репозиторий 4-ой лабораторной работы. Перезаписываем CMakeLists.txt
 
-Сейчас вам требуется настроить систему непрерывной интеграции для библиотек и приложений, с которыми вы работали в [прошлый раз](https://github.com/tp-labs/lab03#Homework). Настройте сборочные процедуры на различных платформах:
-* используйте [TravisCI](https://travis-ci.com/) для сборки на операционной системе **Linux** с использованием компиляторов **gcc** и **clang**;
+Корневой CMakeLists.txt:
 ```
-$ METEOPuT/workspace/tasks
-$ mkdir lab04
-$ git clone https://github.com/METEOPuT/lab03.git lab04
-$ rm -rf lab04/README.md
-$ cd ..
-$ projects
-$ mkdir lab04
-$ git clone https://github.com/tp-labs/lab04.git lab04
-$ cd ..
-$ cp projects/lab04/README.md tasks/lab04
-$ tasks/lab04
-$ nano .travis.yml
-```
-Содержимое .travis.yml
-```
-language: cpp
-os: linux 
-dist: focal
+cmake_minimum_required(VERSION 3.4)
 
-compiler:
-  - gcc  
-  - clang
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-addons:
-  apt:    
-    sources:
-      - george-edison55-precise-backports
-    packages:
-      - cmake
-      - cmake-data
+set(PRINT_VERSION_MAJOR 1)
+set(PRINT_VERSION_MINOR 0)
+set(PRINT_VERSION_PATCH 1)
+set(PRINT_VERSION_TWEAK 0)
+set(PRINT_VERSION ${PRINT_VERSION_MAJOR}.${PRINT_VERSION_MINOR}.${PRINT_VERSION_PATCH}.${PRINT_VERSION_TWEAK})
+set(PRINT_VERSION_STRING "v${PRINT_VERSION}")
 
-script:   
-  - cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
-  - cmake --build _build
-  - cmake --build _build --target install
-```
-Коммитим и отправляем на GitHub
-```
-$ git remote remove origin
-$ git remote add origin https://github.com/METEOPuT/lab04.git
-$ git add .travis.yml   
-$ git commit -m "Добавлен файл .travis.yml"
-$ git push origin master
-```
-Аналогичные действия для GitHub Actions:
-```
-$ mkdir .github
-$ mkdir .github/workflows
-$ .github/workflows
-$ nano build.yml
-```
-Содержимое build.yml:
-```
-language: cpp
+project(lab06)
 
-os: linux  # Сборка на Linux
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex_lib formatter_ex_new_name)
 
-compiler:
-  - gcc
-  - clang
+target_include_directories(formatter_ex_lib PUBLIC formatter_ex_lib formatter_lib hello_world_application solver_lib)
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y cmake
+add_library(solver_lib ${CMAKE_CURRENT_SOURCE_DIR}/solver_lib/solver.cpp)
 
-script:
-  - mkdir build && cd build
-  - cmake ..
-  - cmake --build .
+add_executable(lab06 ${CMAKE_CURRENT_SOURCE_DIR}/solver_application/equation.cpp)
 
+target_link_libraries(lab06 formatter_lib formatter_ex_lib solver_lib)
+
+install(TARGETS lab06
+RUNTIME DESTINATION bin
+)
+
+include(CPackConfig.cmake)
 ```
-Также коммитим и отправляем в репозиторий GitHub:
+Создаём файл CPackConfig.cmake:
 ```
-$ git add build.yml
-$ git commit -m "Аналогичная сборка GitHub Actions"
-$ git push origin master
-```
+include(InstallRequiredSystemLibraries)
 
-* используйте [AppVeyor](https://www.appveyor.com/) для сборки на операционной системе **Windows**.
+set(CPACK_PACKAGE_VERSION_MAJOR ${PRINT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PRINT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PRINT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK ${PRINT_VERSION_TWEAK})
+set(CPACK_PACKAGE_VERSION ${PRINT_VERSION})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "lab06")
+
+set(CPACK_SOURCE_INSTALLED_DIRECTORIES "${CMAKE_SOURCE_DIR}; /")
+
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+
+set(CPACK_DEBIAN_PACKAGE_NAME "lab06")
+set(CPACK_DEBIAN_FILE_NAME "lab06-${PRINT_VERSION}.deb")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "all")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "METEOPuT")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "MB it works correctly")
+set(CPACK_DEBIAN_PACKAGE_RELEASE 1)
+
+set(CPACK_GENERATOR "DEB")
+
+include(CPack)
+```
+Собираем проект:
+```
+$ mkdir build && cd build
+$ cmake ..
+$ cmake --build .
+$ cpack
+```
+Обновляем файл build.yml:
+```
+name: Actions
+
+on:
+ push:
+  branches: [master]
+ pull_request:
+  branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+ build_Linux:
+
+  runs-on: ubuntu-latest
+
+  steps:
+  - uses: actions/checkout@v4
+
+  - name: Configurate
+    run: |
+      rm -rf ${{github.workspace}}/build
+      mkdir build && cd build
+      cmake ..
+      cmake --build .
+
+  - name: cpack
+    run: |
+      cd ${{github.workspace}}/build
+      cpack
+
+  - name: package
+    run: cmake --build ${{github.workspace}}/build --target package
+
+  - name: package_source
+    run: cmake --build ${{github.workspace}}/build --target package_source
+
+  - name: Make a release
+    uses: ncipollo/release-action@v1
+    with:
+      artifacts: "${{github.workspace}}/build/*.deb,${{github.workspace}}/build/*.tar.gz,${{github.workspace}}/build/*.zip"
+      tag: 1.0.0
+      token: ${{ secrets.GITHUB_TOKEN }}
+      allowUpdates: true
+
+  - name: Arts
+    uses: actions/upload-artifact@v4
+    with:
+        name: lab06
+        path: ${{github.workspace}}/build/lab06
+```
+Выгружаем на GitHub
+
+Для этого нужно добавить ветвление в конфигурационные файлы для **CI** со следующей логикой:</br>
+если **commit** помечен тэгом, то необходимо собрать пакеты (`DEB, RPM, WIX, DragNDrop, ...`) </br>
+и разместить их на сервисе **GitHub**. (см. пример для [Travi CI](https://docs.travis-ci.com/user/deployment/releases))</br>
 
 ## Links
 
-- [Travis Client](https://github.com/travis-ci/travis.rb)
-- [AppVeyour](https://www.appveyor.com/)
-- [GitLab CI](https://about.gitlab.com/gitlab-ci/)
+- [DMG](https://cmake.org/cmake/help/latest/module/CPackDMG.html)
+- [DEB](https://cmake.org/cmake/help/latest/module/CPackDeb.html)
+- [RPM](https://cmake.org/cmake/help/latest/module/CPackRPM.html)
+- [NSIS](https://cmake.org/cmake/help/latest/module/CPackNSIS.html)
 
 ```
 Copyright (c) 2015-2021 The ISC Authors
