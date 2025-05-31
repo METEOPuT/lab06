@@ -43,6 +43,7 @@ jobs:
         ${{github.workspace}}/build/*.tar.gz,
         ${{github.workspace}}/build/*.zip,
         ${{github.workspace}}/build/*.rpm,
+        ${{github.workspace}}/build/*.dmg,
       tag: 1.0.0
       token: ${{ secrets.GITHUB_TOKEN }}
       allowUpdates: true
