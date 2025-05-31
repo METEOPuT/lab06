@@ -47,26 +47,26 @@ jobs:
       token: ${{ secrets.GITHUB_TOKEN }}
       allowUpdates: true
 
-build_macOS:
-  runs-on: macos-latest
+ build_macOS:
+   runs-on: macos-latest
 
-  steps:
-    - uses: actions/checkout@v4
+   steps:
+     - uses: actions/checkout@v4
 
-    - name: Configure and build
-      run: |
-        rm -rf ${{ github.workspace }}/build
-        mkdir build && cd build
-        cmake ..
-        cmake --build .
+     - name: Configure and build
+       run: |
+         rm -rf ${{ github.workspace }}/build
+         mkdir build && cd build
+         cmake ..
+         cmake --build .
 
-    - name: cpack
-      run: |
-        cd ${{ github.workspace }}/build
-        cpack
+     - name: cpack
+       run: |
+         cd ${{ github.workspace }}/build
+         cpack
 
-    - name: Upload DMG artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: lab06-macos
-        path: ${{ github.workspace }}/build/*.dmg
+     - name: Upload DMG artifact
+       uses: actions/upload-artifact@v4
+       with:
+         name: lab06-macos
+         path: ${{ github.workspace }}/build/*.dmg
