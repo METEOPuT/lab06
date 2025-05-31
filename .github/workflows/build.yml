@@ -74,28 +74,28 @@ jobs:
          allowUpdates: true
 
  build_Windows:
-   runs-on: windows-latest
+  runs-on: windows-latest
 
-   steps:
-     - uses: actions/checkout@v4
+  steps:
+    - uses: actions/checkout@v4
 
-     - name: Install WiX
-       run: choco install wixtoolset -y
+    - name: Install WiX
+      run: choco install wixtoolset -y
 
-     - name: Configure and Build
-       run: |
-         cmake -B build -DCMAKE_BUILD_TYPE=Release
-         cmake --build build --config Release
+    - name: Configure and Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release
 
-     - name: CPack MSI
-       run: |
-         cd build
-         cpack
+    - name: CPack MSI
+      run: |
+        cd build
+        cpack
 
-    - name: Make a release MSI
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: ${{ github.workspace }}/build/*.msi
-          tag: 1.0.0
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: true
+   - name: Make a release MSI
+       uses: ncipollo/release-action@v1
+       with:
+         artifacts: ${{ github.workspace }}/build/*.msi
+         tag: 1.0.0
+         token: ${{ secrets.GITHUB_TOKEN }}
+         allowUpdates: true
