@@ -140,9 +140,9 @@ CMakeFiles/solver_lib.dir/clean:
 # Target rules for target CMakeFiles/lab06.dir
 
 # All Build rule for target.
-CMakeFiles/lab06.dir/all: formatter_ex_new_name/CMakeFiles/formatter_ex_lib.dir/all
 CMakeFiles/lab06.dir/all: formatter_ex_new_name/formatter_lib/CMakeFiles/formatter_lib.dir/all
 CMakeFiles/lab06.dir/all: CMakeFiles/solver_lib.dir/all
+CMakeFiles/lab06.dir/all: formatter_ex_new_name/CMakeFiles/formatter_ex_lib.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab06.dir/build.make CMakeFiles/lab06.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab06.dir/build.make CMakeFiles/lab06.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/kali/METEOPuT/workspace/tasks/lab06/build/CMakeFiles --progress-num=5,6 "Built target lab06"

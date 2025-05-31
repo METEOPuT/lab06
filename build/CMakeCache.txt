@@ -237,24 +237,6 @@ formatter_lib_IS_TOP_LEVEL:STATIC=OFF
 formatter_lib_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/formatter_lib
 
 //Value Computed by CMake
-hello_world_BINARY_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/build/hello_world_application
-
-//Value Computed by CMake
-hello_world_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-hello_world_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/hello_world_application
-
-//Value Computed by CMake
-lab04_BINARY_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/build
-
-//Value Computed by CMake
-lab04_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-lab04_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06
-
-//Value Computed by CMake
 lab06_BINARY_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/build
 
 //Value Computed by CMake
@@ -262,24 +244,6 @@ lab06_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 lab06_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06
-
-//Value Computed by CMake
-solver_application_BINARY_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/build/solver_application
-
-//Value Computed by CMake
-solver_application_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-solver_application_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/solver_application
-
-//Value Computed by CMake
-solver_lib_BINARY_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/build/solver_application/solver_lib
-
-//Value Computed by CMake
-solver_lib_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-solver_lib_SOURCE_DIR:STATIC=/home/kali/METEOPuT/workspace/tasks/lab06/solver_lib
 
 
 ########################
