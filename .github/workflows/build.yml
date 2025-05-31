@@ -65,8 +65,10 @@ jobs:
          cd ${{ github.workspace }}/build
          cpack
 
-     - name: Upload DMG artifact
-       uses: actions/upload-artifact@v4
+     - name: Make a release DMG
+       uses: ncipollo/release-action@v1
        with:
-         name: lab06-macos
-         path: ${{ github.workspace }}/build/*.dmg
+         artifacts: ${{ github.workspace }}/build/*.dmg
+         tag: 1.0.0
+         token: ${{ secrets.GITHUB_TOKEN }}
+         allowUpdates: true
